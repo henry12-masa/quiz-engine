@@ -2,14 +2,400 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>表示テスト</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>歴史クイズ</title>
+
+<meta name="description" content="歴史クイズサイト">
+
+<style>
+body{
+font-family:sans-serif;
+margin:0;
+background:#f4f7fb;
+color:#222;
+}
+
+header{
+background:#111827;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+nav{
+display:flex;
+gap:10px;
+justify-content:center;
+padding:15px;
+flex-wrap:wrap;
+background:white;
+}
+
+nav a{
+padding:10px 15px;
+background:#e5e7eb;
+border-radius:999px;
+text-decoration:none;
+color:black;
+font-weight:bold;
+}
+
+.active{
+background:#2563eb;
+color:white;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:20px;
+}
+
+.quiz-box{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.status{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+font-weight:bold;
+}
+
+.progress{
+height:10px;
+background:#ddd;
+border-radius:999px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+#bar{
+height:100%;
+width:0%;
+background:#22c55e;
+}
+
+#question{
+font-size:28px;
+margin-bottom:25px;
+}
+
+#choices{
+display:grid;
+gap:12px;
+}
+
+#choices button{
+padding:16px;
+font-size:18px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#f1f5f9;
+font-weight:bold;
+}
+
+#choices button:hover{
+background:#dbeafe;
+}
+
+.correct{
+background:#86efac !important;
+}
+
+.wrong{
+background:#fca5a5 !important;
+}
+
+#ad{
+margin-top:30px;
+background:white;
+padding:20px;
+border-radius:20px;
+text-align:center;
+}
+
+.finish{
+text-align:center;
+font-size:28px;
+font-weight:bold;
+}
+</style>
 </head>
+
 <body>
-<h1>表示テストOK</h1>
-<p>これが出ればVercelは正常です。</p>
+
+<header>
+<h1 id="title">歴史クイズ</h1>
+<p id="desc">クイズに挑戦しよう！</p>
+</header>
+
+<nav id="menu"></nav>
+
+<div class="container">
+
+<div class="quiz-box">
+
+<div class="status">
+<span id="count"></span>
+<span id="score"></span>
+</div>
+
+<div class="progress">
+<div id="bar"></div>
+</div>
+
+<h2 id="question"></h2>
+
+<div id="choices"></div>
+
+<p id="result"></p>
+
+</div>
+
+<div id="ad">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8398161859137802"
+crossorigin="anonymous"></script>
+
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-8398161859137802"
+data-ad-slot="5599163841"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
 
 <script>
-document.body.insertAdjacentHTML("beforeend", "<h2>JavaScriptも動いています</h2>");
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
+</div>
+
+</div>
+
+<script>
+
+const type =
+new URLSearchParams(location.search).get("type")
+|| "history";
+
+const info = {
+history:{
+title:"歴史クイズ",
+desc:"世界史・日本史クイズ"
+},
+sengoku:{
+title:"戦国クイズ",
+desc:"戦国武将クイズ"
+},
+castle:{
+title:"城クイズ",
+desc:"城クイズ"
+}
+};
+
+const data = {
+
+history:[
+{
+q:"ナポレオンが皇帝になった国は？",
+c:["フランス","イギリス","ロシア","ドイツ"],
+a:"フランス"
+},
+{
+q:"ピラミッド文明で有名なのは？",
+c:["エジプト","ローマ","中国","インド"],
+a:"エジプト"
+},
+{
+q:"ローマ帝国の首都は？",
+c:["ローマ","パリ","ロンドン","ベルリン"],
+a:"ローマ"
+}
+],
+
+sengoku:[
+{
+q:"独眼竜は？",
+c:["伊達政宗","織田信長","武田信玄","徳川家康"],
+a:"伊達政宗"
+},
+{
+q:"本能寺の変で討たれたのは？",
+c:["織田信長","豊臣秀吉","徳川家康","石田三成"],
+a:"織田信長"
+},
+{
+q:"甲斐の虎は？",
+c:["武田信玄","上杉謙信","伊達政宗","毛利元就"],
+a:"武田信玄"
+}
+],
+
+castle:[
+{
+q:"姫路城がある県は？",
+c:["兵庫県","大阪府","京都府","滋賀県"],
+a:"兵庫県"
+},
+{
+q:"白鷺城と呼ばれる城は？",
+c:["姫路城","松本城","熊本城","大阪城"],
+a:"姫路城"
+},
+{
+q:"黒い外観で有名な城は？",
+c:["松本城","姫路城","彦根城","熊本城"],
+a:"松本城"
+}
+]
+
+};
+
+document.title = info[type].title;
+
+document.querySelector(
+'meta[name="description"]'
+).content = info[type].desc;
+
+document.getElementById("title").textContent =
+info[type].title;
+
+document.getElementById("desc").textContent =
+info[type].desc;
+
+document.getElementById("menu").innerHTML = `
+<a href="/?type=history"
+class="${type==="history"?"active":""}">
+歴史
+</a>
+
+<a href="/?type=sengoku"
+class="${type==="sengoku"?"active":""}">
+戦国
+</a>
+
+<a href="/?type=castle"
+class="${type==="castle"?"active":""}">
+城
+</a>
+`;
+
+function shuffle(arr){
+return arr.sort(()=>Math.random()-0.5);
+}
+
+let questions =
+shuffle([...data[type]]).slice(0,50);
+
+let current = 0;
+let score = 0;
+let lock = false;
+
+function show(){
+
+if(current >= questions.length){
+
+document.getElementById("question")
+.innerHTML = `
+<div class="finish">
+${questions.length}問中
+${score}問正解！
+</div>
+`;
+
+document.getElementById("choices")
+.innerHTML = `
+<button onclick="location.reload()">
+もう一度遊ぶ
+</button>
+`;
+
+return;
+}
+
+const q = questions[current];
+
+document.getElementById("count")
+.textContent =
+`${current+1}/${questions.length}`;
+
+document.getElementById("score")
+.textContent =
+`スコア:${score}`;
+
+document.getElementById("bar")
+.style.width =
+`${(current/questions.length)*100}%`;
+
+document.getElementById("question")
+.textContent = q.q;
+
+document.getElementById("choices")
+.innerHTML = shuffle([...q.c])
+.map(choice => `
+<button onclick="answer(this,'${choice}')">
+${choice}
+</button>
+`).join("");
+}
+
+function answer(btn,choice){
+
+if(lock) return;
+
+lock = true;
+
+const q = questions[current];
+
+const buttons =
+document.querySelectorAll("#choices button");
+
+buttons.forEach(b=>{
+
+b.disabled = true;
+
+if(b.textContent === q.a){
+b.classList.add("correct");
+}
+
+});
+
+if(choice === q.a){
+
+score++;
+
+btn.classList.add("correct");
+
+}else{
+
+btn.classList.add("wrong");
+
+}
+
+document.getElementById("score")
+.textContent =
+`スコア:${score}`;
+
+setTimeout(()=>{
+
+current++;
+
+lock = false;
+
+show();
+
+},1000);
+
+}
+
+show();
+
+</script>
+
 </body>
 </html>
