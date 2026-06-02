@@ -6,7 +6,7 @@ let answered = false;
 const questionEl = document.getElementById("question");
 const choicesEl = document.getElementById("choices");
 const resultEl = document.getElementById("result");
-const progressEl = document.getElementById("progress");
+const progressEl = document.getElementById("count");
 const scoreEl = document.getElementById("score");
 
 function shuffle(array) {
