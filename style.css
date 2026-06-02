@@ -109,4 +109,27 @@ top:20px;
 grid-template-columns:1fr;
 }
 
+  #choices {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.choice-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #eef2ff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: left;
+}
+
+.choice-btn:hover {
+  background: #dbe4ff;
+}
+
 }
