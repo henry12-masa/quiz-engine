@@ -16,7 +16,9 @@ function shuffle(array) {
 }
 
 function createChoices(correctPerson) {
-  const allNames = [...new Set(window.quizData.map(q => q.person))];
+  const allNames = [
+    ...new Set(window.quizData.map(q => q.person))
+  ];
 
   const wrong = shuffle(
     allNames.filter(name => name !== correctPerson)
@@ -26,7 +28,8 @@ function createChoices(correctPerson) {
 }
 
 function startQuiz() {
-  questions = shuffle(window.quizData).slice(0, QUESTION_COUNT);
+  questions = shuffle(window.quizData)
+    .slice(0, QUESTION_COUNT);
 
   currentIndex = 0;
   score = 0;
@@ -39,10 +42,15 @@ function showQuestion() {
 
   if (currentIndex >= questions.length) {
     questionEl.textContent = "終了！";
+
     choicesEl.innerHTML = "";
+
     resultEl.innerHTML = `
-      スコア: ${score} / ${questions.length}
+      <div class="finish">
+        スコア: ${score} / ${questions.length}
+      </div>
     `;
+
     return;
   }
 
@@ -72,7 +80,9 @@ function showQuestion() {
     button.className = "choice-btn";
     button.textContent = choice;
 
-    button.onclick = () => checkAnswer(choice, q);
+    button.onclick = () => {
+      checkAnswer(choice, q);
+    };
 
     choicesEl.appendChild(button);
   });
@@ -110,6 +120,11 @@ function checkAnswer(choice, q) {
       <div class="correct">
         正解！
       </div>
+
+      <div class="quote">
+        ${q.display}
+      </div>
+
       <div class="explain">
         ${q.explain}
       </div>
@@ -119,6 +134,11 @@ function checkAnswer(choice, q) {
       <div class="wrong">
         不正解！
       </div>
+
+      <div class="quote">
+        ${q.display}
+      </div>
+
       <div class="explain">
         正解: ${q.person}<br><br>
         ${q.explain}
@@ -135,4 +155,21 @@ function checkAnswer(choice, q) {
   }, 1800);
 }
 
-startQuiz();
+/* ===== 読み込みチェック ===== */
+
+if (
+  !window.quizData ||
+  !Array.isArray(window.quizData)
+) {
+
+  questionEl.textContent =
+    "問題データが読み込めませんでした。";
+
+  choicesEl.innerHTML = "";
+  resultEl.innerHTML = "";
+
+} else {
+
+  startQuiz();
+
+}
